@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"startup/helper"
 	"startup/user"
@@ -103,5 +104,40 @@ func (h *userHandler) CheckEmailAvaibility(c *gin.Context) {
 	}
 
 	response := helper.ApiResponse(metaMessage, http.StatusOK, "success", data)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *userHandler) UploadAvatar(c *gin.Context) {
+
+	file, err := c.FormFile("avatar")
+
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("Failed to upload avatar image", http.StatusUnprocessableEntity, "failed", data)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	userId := 1
+	path := fmt.Sprintf("images/%d-%s", userId, file.Filename)
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("Failed to upload avatar image", http.StatusUnprocessableEntity, "failed", data)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	_, err = h.userService.SaveAvatar(userId, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("Failed to upload avatar image", http.StatusUnprocessableEntity, "failed", data)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	data := gin.H{"is_uploaded": true}
+	response := helper.ApiResponse("Success to upload avatar image", http.StatusOK, "success", data)
 	c.JSON(http.StatusOK, response)
 }
