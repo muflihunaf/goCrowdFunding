@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	dsn := "root:@tcp(127.0.0.1)/startup?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:firman123@tcp(127.0.0.1)/startup?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -41,6 +41,7 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvaibility)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 
 	router.Run()

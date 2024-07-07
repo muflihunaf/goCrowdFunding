@@ -5,6 +5,7 @@ import "time"
 type Campaign struct {
 	ID               int
 	UserId           int
+	Name             string
 	ShortDescription string
 	Description      string
 	Perks            string
