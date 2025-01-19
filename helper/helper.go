@@ -36,3 +36,12 @@ func FormatError(err error) []string {
 	}
 	return errors
 }
+
+func FormatValidationError(err error) []string {
+	var errors []string
+
+	for _, e := range err.(validator.ValidationErrors) {
+		errors = append(errors, e.Error())
+	}
+	return errors
+}
